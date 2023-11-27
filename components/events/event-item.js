@@ -29,13 +29,13 @@ export default function EventItem({ event }) {
       <div className={classes.info}>
         <h3>{event.title}</h3>
         <div className={classes.date}>
-          <span>
+          <span className={classes.icon}>
             <DateIcon />
           </span>
           <span>{humanReadableDate}</span>
         </div>
         <div className={classes.address}>
-          <span>
+          <span className={classes.icon}>
             <AddressIcon />
           </span>
           <span>{formattedAddress}</span>

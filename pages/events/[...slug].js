@@ -1,44 +1,64 @@
+import EventList from "@/components/events/event-list";
+import { getFilteredEvents } from "@/dummy-data";
 import { useRouter } from "next/router";
+import classes from "./events-filtered.module.css";
+import Button from "@/components/ui/button";
 
 /**
  * Map of month in number to month's name. E.g 01 -> January, 12 -> Desember.
  */
-const yearMap = {
-  "01": "January",
-  "02": "February",
-  "03": "March",
-  "04": "April",
-  "05": "May",
-  "06": "June",
-  "07": "July",
-  "08": "August",
-  "09": "September",
-  10: "October",
-  11: "November",
-  12: "Desember",
-};
+const yearList = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "Desember",
+];
 
 export default function FilteredEventsPage() {
   const router = useRouter();
 
-  console.log(router.pathname);
-  console.log(router.query);
-
-  const slugObj = {};
+  let month;
+  let year;
   if (router.query.slug) {
-    slugObj.year = router.query.slug[0];
-    slugObj.month = router.query.slug[1];
+    year = parseInt(router.query.slug[0]);
+    month = parseInt(router.query.slug[1]);
+  }
+
+  if (isNaN(year) || year < 2020 || year > 2030) {
+    return <div>Invalid year</div>;
+  }
+
+  if (isNaN(month) || month < 1 || month > 12) {
+    return <div>Invalid month</div>;
+  }
+
+  const filteredEvents = getFilteredEvents({
+    year: year,
+    month: month,
+  });
+
+  let eventList = <p>No event exist!</p>;
+  if (filteredEvents.length > 0) {
+    eventList = <EventList items={filteredEvents} />;
   }
 
   return (
-    <div>
-      <h1>Events filtered by:</h1>
-      <p>
-        <strong>Year:</strong> {slugObj.year}
-      </p>
-      <p>
-        <strong>Month:</strong> {yearMap[slugObj.month]}
-      </p>
+    <div className={classes.filteredEvents}>
+      <h1>Events in {`${yearList[month - 1]} ${year}`}</h1>
+      <div className={classes.buttonWrapper}>
+        <Button link={"/events"} className={classes.button}>
+          Show All Events
+        </Button>
+      </div>
+      {eventList}
     </div>
   );
 }
