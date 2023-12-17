@@ -1,8 +1,9 @@
+import Image from "next/image";
+
 import DateIcon from "../icons/date-icon";
 import AddressIcon from "../icons/address-icon";
 import Card from "../ui/card";
 import classes from "./event-detail.module.css";
-import Image from "next/image";
 
 export function EventDetail({ event }) {
   const humanReadableDate = new Date(event.date).toLocaleDateString("en-US", {
@@ -48,16 +49,3 @@ export function EventDetail({ event }) {
     </div>
   );
 }
-
-/*
-  {
-    id: "e3",
-    title: "Networking for extroverts",
-    description:
-      "You probably need no help with networking in general. But focusing your energy correctly - that is something where most people can improve.",
-    location: "My Street 12, 10115 Broke City",
-    date: "2022-04-10",
-    image: "images/extrovert-event.jpg",
-    isFeatured: true,
-  },
-*/

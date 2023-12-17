@@ -1,19 +1,46 @@
-import { getEventById } from "@/dummy-data";
-import { useRouter } from "next/router";
+import { Fragment } from "react";
+import Head from "next/head";
+
 import { EventDetail } from "@/components/event-detail/event-detail";
+import { getEvents } from "@/data/events";
 
-export default function EventDetailPage() {
-  const router = useRouter();
-  const eventId = router.query.eventId;
+export default function EventDetailPage(props) {
+  return (
+    <Fragment>
+      <Head>
+        <title>{props.event.title}</title>
+        <meta name="description" content={props.event.description} />
+      </Head>
+      <EventDetail event={props.event} />;
+    </Fragment>
+  );
+}
 
-  if (!eventId) {
-    return <div>Loading...</div>;
-  }
-
-  const event = getEventById(eventId);
+export async function getStaticProps(context) {
+  const eventId = context.params.eventId;
+  const events = await getEvents();
+  const event = events.find((e) => e.id === eventId);
   if (!event) {
-    return <div>No event found!</div>;
+    return {
+      notFound: true,
+    };
   }
 
-  return <EventDetail event={event} />;
+  return {
+    props: {
+      event: event,
+    },
+    revalidate: 60,
+  };
+}
+
+export async function getStaticPaths() {
+  const events = await getEvents();
+
+  const eventPathParams = events.map((e) => ({ params: { eventId: e.id } }));
+
+  return {
+    paths: eventPathParams,
+    fallback: "blocking",
+  };
 }

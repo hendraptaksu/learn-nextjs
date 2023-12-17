@@ -49,14 +49,14 @@
 
 .date,
 .address {
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
 }
 
 .date svg,
 .address svg {
-  width: 20px;
-  height: 20px;
-  color: #666666;
+    width: 20px;
+    height: 20px;
+    color: #666666;
 }

@@ -1,6 +1,6 @@
 import Image from "next/image";
-import Card from "../ui/card";
 
+import Card from "../ui/card";
 import classes from "./event-item.module.css";
 import Button from "../ui/button";
 import ArrowRightIcon from "../icons/arrow-right-icon";
@@ -22,8 +22,9 @@ export default function EventItem({ event }) {
         <Image
           src={"/" + event.image}
           alt={event.title}
-          fill
           className={classes.image}
+          width={240}
+          height={240}
         />
       </div>
       <div className={classes.info}>

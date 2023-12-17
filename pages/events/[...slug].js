@@ -1,11 +1,12 @@
+import Head from "next/head";
+
 import EventList from "@/components/events/event-list";
-import { getFilteredEvents } from "@/dummy-data";
-import { useRouter } from "next/router";
-import classes from "./events-filtered.module.css";
 import Button from "@/components/ui/button";
+import { getEvents } from "@/data/events";
+import classes from "./events-filtered.module.css";
 
 /**
- * Map of month in number to month's name. E.g 01 -> January, 12 -> Desember.
+ * yearList is a list of months.
  */
 const yearList = [
   "January",
@@ -22,36 +23,39 @@ const yearList = [
   "Desember",
 ];
 
-export default function FilteredEventsPage() {
-  const router = useRouter();
+export default function FilteredEventsPage(props) {
+  const { filteredEvents, error } = props;
+  const { month, year } = props.filter;
 
-  let month;
-  let year;
-  if (router.query.slug) {
-    year = parseInt(router.query.slug[0]);
-    month = parseInt(router.query.slug[1]);
+  if (error) {
+    return (
+      <div className="center">
+        <Head>
+          <title>Filtered Events</title>
+          <meta
+            name="description"
+            content={`Error ocurred when fetching events.`}
+          />
+        </Head>
+        <p>{error}</p>
+        <Button link={"/events"} className={classes.button}>
+          Show All Events
+        </Button>
+      </div>
+    );
   }
 
-  if (isNaN(year) || year < 2020 || year > 2030) {
-    return <div>Invalid year</div>;
-  }
-
-  if (isNaN(month) || month < 1 || month > 12) {
-    return <div>Invalid month</div>;
-  }
-
-  const filteredEvents = getFilteredEvents({
-    year: year,
-    month: month,
-  });
-
-  let eventList = <p>No event exist!</p>;
+  let eventList = <p>No event found</p>;
   if (filteredEvents.length > 0) {
     eventList = <EventList items={filteredEvents} />;
   }
 
   return (
     <div className={classes.filteredEvents}>
+      <Head>
+        <title>Filtered Events</title>
+        <meta name="description" content={`Events held in ${month}/${year}`} />
+      </Head>
       <h1>Events in {`${yearList[month - 1]} ${year}`}</h1>
       <div className={classes.buttonWrapper}>
         <Button link={"/events"} className={classes.button}>
@@ -61,4 +65,53 @@ export default function FilteredEventsPage() {
       {eventList}
     </div>
   );
+}
+
+export async function getServerSideProps(context) {
+  let year = 0;
+  let month = 0;
+  let error = "";
+  if (context.params.slug) {
+    year = parseInt(context.params.slug[0]);
+    month = parseInt(context.params.slug[1]);
+  }
+
+  if (isNaN(year) || year < 2020 || year > 2030) {
+    error = "Invalid year";
+  }
+
+  if (isNaN(month) || month < 1 || month > 12) {
+    error = "Invalid month";
+  }
+
+  if (error) {
+    return {
+      props: {
+        error: error,
+        filter: {
+          month: month,
+          year: year,
+        },
+      },
+    };
+  }
+
+  const events = await getEvents();
+  const filteredEvents = events.filter((e) => {
+    const eventDate = new Date(e.date);
+
+    return (
+      eventDate.getFullYear() === year && eventDate.getMonth() === month - 1
+    );
+  });
+
+  return {
+    props: {
+      filteredEvents: filteredEvents,
+      filter: {
+        month: month,
+        year: year,
+      },
+    },
+  };
 }
