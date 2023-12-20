@@ -2,6 +2,7 @@ import Head from "next/head";
 
 import EventList from "@/components/events/event-list";
 import { getEvents } from "@/data/events";
+import NewsletterRegistration from "@/components/input/newsletter-registration";
 
 export default function FeaturedEventsPage(props) {
   return (
@@ -10,7 +11,7 @@ export default function FeaturedEventsPage(props) {
         <title>Featured Events</title>
         <meta name="description" content="Featured events goes here..." />
       </Head>
-      <h1>Featured Events</h1>
+      <NewsletterRegistration />
       <EventList items={props.events} />
     </div>
   );

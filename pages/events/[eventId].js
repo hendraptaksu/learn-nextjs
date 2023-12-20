@@ -3,6 +3,7 @@ import Head from "next/head";
 
 import { EventDetail } from "@/components/event-detail/event-detail";
 import { getEvents } from "@/data/events";
+import Comments from "@/components/input/comments";
 
 export default function EventDetailPage(props) {
   return (
@@ -12,6 +13,7 @@ export default function EventDetailPage(props) {
         <meta name="description" content={props.event.description} />
       </Head>
       <EventDetail event={props.event} />;
+      <Comments eventId={props.event.id} />
     </Fragment>
   );
 }
