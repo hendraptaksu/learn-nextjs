@@ -10,7 +10,7 @@ export default function handler(req, res) {
       return getComments(req, res);
     default:
       return res.status(405).json({
-        message: "Method Not Allowed",
+        error: "Method Not Allowed",
       });
   }
 }
@@ -19,7 +19,7 @@ async function createComment(req, res) {
   const { email, name, comment, eventId } = req.body;
 
   if (!email || !name || !comment || !eventId) {
-    return res.status(400).json({ message: "input validation failed." });
+    return res.status(400).json({ error: "input validation failed." });
   }
 
   const collection = await getCollection(collectionName);
@@ -33,7 +33,7 @@ async function createComment(req, res) {
 async function getComments(req, res) {
   if (req.method !== "GET") {
     return res.status(405).json({
-      message: "Method Not Allowed",
+      error: "Method Not Allowed",
     });
   }
 

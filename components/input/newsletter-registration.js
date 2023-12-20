@@ -1,5 +1,6 @@
 import { useRef } from "react";
 import classes from "./newsletter-registration.module.css";
+import { toast } from "react-toastify";
 
 function NewsletterRegistration() {
   const emailRef = useRef();
@@ -8,7 +9,6 @@ function NewsletterRegistration() {
     event.preventDefault();
 
     const email = emailRef.current.value;
-    console.log("e", email);
 
     if (!email) {
       return alert("Invalid email");
@@ -24,7 +24,19 @@ function NewsletterRegistration() {
       }),
     })
       .then((res) => res.json())
-      .then((data) => console.log("response data:", data));
+      .then((data) => {
+        if (data.error) {
+          toast.error(data.error);
+        }
+
+        if (data.message) {
+          toast.success("Your are signed up for newsletter!");
+        }
+      })
+      .catch((err) => {
+        console.log("newsletter signup err:", err);
+        toast.error(err);
+      });
   }
 
   return (
