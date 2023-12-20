@@ -23,8 +23,7 @@ export default function EventItem({ event }) {
           src={"/" + event.image}
           alt={event.title}
           className={classes.image}
-          width={240}
-          height={240}
+          fill
         />
       </div>
       <div className={classes.info}>
