@@ -1,29 +1,23 @@
-import Head from "next/head";
+import { Fragment } from "react";
+import FeaturedPosts from "@/components/posts/featured-posts";
+import Hero from "@/components/ui/hero";
+import { getFeaturedPosts } from "@/util/post";
 
-import EventList from "@/components/events/event-list";
-import { getEvents } from "@/data/events";
-import NewsletterRegistration from "@/components/input/newsletter-registration";
-
-export default function FeaturedEventsPage(props) {
+export default function HomePage(props) {
   return (
-    <div className="justify-center">
-      <Head>
-        <title>Featured Events</title>
-        <meta name="description" content="Featured events goes here..." />
-      </Head>
-      <NewsletterRegistration />
-      <EventList items={props.events} />
-    </div>
+    <Fragment>
+      <Hero />
+      <FeaturedPosts posts={props.posts} />
+    </Fragment>
   );
 }
 
-export async function getStaticProps() {
-  const events = await getEvents();
+export function getStaticProps() {
+  const featuredPosts = getFeaturedPosts();
 
   return {
     props: {
-      events: events.filter((e) => e.isFeatured),
+      posts: featuredPosts,
     },
-    revalidate: 60,
   };
 }

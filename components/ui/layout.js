@@ -1,25 +1,14 @@
-import Link from "next/link";
+import { Fragment } from "react";
 
-import classes from "./layout.module.css";
+import MainNavigation from "./main-navigation";
 
-export default function Layout({ children }) {
+function Layout(props) {
   return (
-    <div className={classes.layout}>
-      <nav className={classes.nav}>
-        <div>
-          <Link href="/" className={classes.brand}>
-            NextEvents
-          </Link>
-          <ul>
-            <li>
-              <Link href="/events" className={classes.linkItem}>
-                Browse All Events
-              </Link>
-            </li>
-          </ul>
-        </div>
-      </nav>
-      <main>{children}</main>
-    </div>
+    <Fragment>
+      <MainNavigation />
+      <main>{props.children}</main>
+    </Fragment>
   );
 }
+
+export default Layout;
