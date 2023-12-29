@@ -1,0 +1,6 @@
+.navigation-bar {
+    background-color: var(--color-grey-900);
+    padding: 20px 60px;
+    display: flex;
+    justify-content: space-between;
+}

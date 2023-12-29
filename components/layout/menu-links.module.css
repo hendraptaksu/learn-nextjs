@@ -1,0 +1,9 @@
+.menu-links ul {
+    display: flex;
+    gap: 30px;
+    list-style: none;
+}
+
+.menu-links li a {
+    color: var(--color-grey-100);
+}

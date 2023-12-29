@@ -1,87 +1,107 @@
 import { useState, useEffect } from "react";
-
 import classes from "./contact-form.module.css";
+import Notification from "../ui/notification";
 
-async function sendContactData(contactDetails) {
+async function sendMessage(messageData) {
   const response = await fetch("/api/contact", {
     method: "POST",
-    body: JSON.stringify(contactDetails),
     headers: {
       "Content-Type": "application/json",
     },
+    body: JSON.stringify(messageData),
   });
 
   const data = await response.json();
 
   if (!response.ok) {
-    throw new Error(data.message || "Something went wrong!");
+    console.log("de", data.error);
+    throw new Error(data.error || "Something went wrong!");
   }
+
+  return data;
 }
 
-function ContactForm() {
-  const [enteredEmail, setEnteredEmail] = useState("");
-  const [enteredName, setEnteredName] = useState("");
-  const [enteredMessage, setEnteredMessage] = useState("");
-  const [requestStatus, setRequestStatus] = useState(); // 'pending', 'success', 'error'
-  const [requestError, setRequestError] = useState();
+export default function ContactForm() {
+  const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
+  const [message, setMessage] = useState("");
+  const [notification, setNotification] = useState();
 
   useEffect(() => {
-    if (requestStatus === "success" || requestStatus === "error") {
+    if (
+      notification &&
+      (notification.status === "success" || notification.status === "error")
+    ) {
       const timer = setTimeout(() => {
-        setRequestStatus(null);
-        setRequestError(null);
+        setNotification(null);
       }, 3000);
 
-      return () => clearTimeout(timer);
+      return () => {
+        clearTimeout(timer);
+      };
     }
-  }, [requestStatus]);
+  }, [notification]);
 
-  async function sendMessageHandler(event) {
-    event.preventDefault();
+  async function handleSubmitMessage(e) {
+    e.preventDefault();
 
-    // optional: add client-side validation
-
-    setRequestStatus("pending");
-
+    setNotification({
+      title: "Sending!",
+      message: "Sending message...",
+      status: "pending",
+    });
     try {
-      await sendContactData({
-        email: enteredEmail,
-        name: enteredName,
-        message: enteredMessage,
+      const data = await sendMessage({
+        name,
+        email,
+        message,
       });
-      setRequestStatus("success");
-      setEnteredMessage("");
-      setEnteredEmail("");
-      setEnteredName("");
-    } catch (error) {
-      setRequestError(error.message);
-      setRequestStatus("error");
+      clearFormInput();
+      setNotification({
+        title: "Success!",
+        message: data.message,
+        status: "success",
+      });
+    } catch (err) {
+      setNotification({
+        title: "Error!",
+        message: err.message || "Some error occurred!",
+        status: "error",
+      });
     }
+  }
+
+  function handleDismissNotification() {
+    setNotification(null);
+  }
+
+  function clearFormInput() {
+    setName("");
+    setEmail("");
+    setMessage("");
   }
 
   return (
     <section className={classes.contact}>
-      <h1>How can I help you?</h1>
-      <form className={classes.form} onSubmit={sendMessageHandler}>
+      <h1>How Can I Help You?</h1>
+      <form className={classes.form} onSubmit={handleSubmitMessage}>
         <div className={classes.controls}>
           <div className={classes.control}>
             <label htmlFor="email">Your Email</label>
             <input
-              type="email"
               id="email"
-              required
-              value={enteredEmail}
-              onChange={(event) => setEnteredEmail(event.target.value)}
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </div>
           <div className={classes.control}>
             <label htmlFor="name">Your Name</label>
             <input
-              type="text"
               id="name"
-              required
-              value={enteredName}
-              onChange={(event) => setEnteredName(event.target.value)}
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
             />
           </div>
         </div>
@@ -89,19 +109,23 @@ function ContactForm() {
           <label htmlFor="message">Your Message</label>
           <textarea
             id="message"
-            rows="5"
-            required
-            value={enteredMessage}
-            onChange={(event) => setEnteredMessage(event.target.value)}
+            rows={5}
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
           ></textarea>
         </div>
-
         <div className={classes.actions}>
           <button>Send Message</button>
         </div>
       </form>
+      {notification && (
+        <Notification
+          title={notification.title}
+          message={notification.message}
+          status={notification.status}
+          onClick={handleDismissNotification}
+        />
+      )}
     </section>
   );
 }
-
-export default ContactForm;

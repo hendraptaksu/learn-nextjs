@@ -1,0 +1,25 @@
+.hero {
+    text-align: center;
+    padding: var(--size-8) 0;
+    background-color: var(--color-grey-900);
+    color: var(--color-grey-300);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.hero img {
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.hero h2 {
+    font-size: var(--size-16);
+    margin: auto;
+}
+
+.hero p {
+    font-size: var(--size-6);
+    margin: auto;
+}
