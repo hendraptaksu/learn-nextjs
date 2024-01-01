@@ -14,7 +14,6 @@ async function sendMessage(messageData) {
   const data = await response.json();
 
   if (!response.ok) {
-    console.log("de", data.error);
     throw new Error(data.error || "Something went wrong!");
   }
 
