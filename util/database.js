@@ -1,9 +1,15 @@
 import { MongoClient } from "mongodb";
 
 // Connection URL
-const url = "mongodb://localhost:27017";
+// const url = "mongodb://localhost:27017";
+const dbUser = process.env.db_username;
+const dbPass = process.env.db_password;
+const dbCluster = process.env.db_clustername;
+const dbName = process.env.db_name;
+
+const url = `mongodb+srv://${dbUser}:${dbPass}@${dbCluster}.90yhs10.mongodb.net/?retryWrites=true&w=majority`;
+
 const client = new MongoClient(url);
-const dbName = "my-blog";
 
 async function getDb() {
   try {
